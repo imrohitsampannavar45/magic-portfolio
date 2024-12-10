@@ -325,7 +325,7 @@ export default function About(
                             </Heading>
                             <Flex
                                 direction="row"
-                                wrap="wrap"
+                                wrap={true}
                                 fillWidth
                                 gap="l">
                                 {about.technical.skills.map((skill, index) => (
