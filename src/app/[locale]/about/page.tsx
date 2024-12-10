@@ -6,61 +6,61 @@ import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
 
 export async function generateMetadata(
-    {params: {locale}}: { params: { locale: string }}
+    { params: { locale } }: { params: { locale: string } }
 ) {
     const t = await getTranslations();
-    const {person, about, social } = renderContent(t);
-	const title = about.title;
-	const description = about.description;
-	const ogImage = `https://${baseURL}/og?title=${encodeURIComponent(title)}`;
+    const { person, about, social } = renderContent(t);
+    const title = about.title;
+    const description = about.description;
+    const ogImage = `https://${baseURL}/og?title=${encodeURIComponent(title)}`;
 
-	return {
-		title,
-		description,
-		openGraph: {
-			title,
-			description,
-			type: 'website',
-			url: `https://${baseURL}/${locale}/about`,
-			images: [
-				{
-					url: ogImage,
-					alt: title,
-				},
-			],
-		},
-		twitter: {
-			card: 'summary_large_image',
-			title,
-			description,
-			images: [ogImage],
-		},
-	};
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            type: 'website',
+            url: `https://${baseURL}/${locale}/about`,
+            images: [
+                {
+                    url: ogImage,
+                    alt: title,
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description,
+            images: [ogImage],
+        },
+    };
 }
 
 export default function About(
-    { params: {locale}}: { params: { locale: string }}
+    { params: { locale } }: { params: { locale: string } }
 ) {
     unstable_setRequestLocale(locale);
     const t = useTranslations();
-    const {person, about, social } = renderContent(t);
+    const { person, about, social } = renderContent(t);
     const structure = [
-        { 
+        {
             title: about.intro.title,
             display: about.intro.display,
             items: []
         },
-        { 
+        {
             title: about.work.title,
             display: about.work.display,
             items: about.work.experiences.map(experience => experience.company)
         },
-        { 
+        {
             title: about.studies.title,
             display: about.studies.display,
             items: about.studies.institutions.map(institution => institution.name)
         },
-        { 
+        {
             title: about.technical.title,
             display: about.technical.display,
             items: about.technical.skills.map(skill => skill.title)
@@ -92,7 +92,7 @@ export default function About(
                     }),
                 }}
             />
-            { about.tableOfContent.display && (
+            {about.tableOfContent.display && (
                 <Flex
                     style={{ left: '0', top: '50%', transform: 'translateY(-50%)' }}
                     position="fixed"
@@ -106,23 +106,23 @@ export default function About(
             <Flex
                 fillWidth
                 mobileDirection="column" justifyContent="center">
-                { about.avatar.display && (
+                {about.avatar.display && (
                     <Flex
                         className={styles.avatar}
                         minWidth="160" paddingX="l" paddingBottom="xl" gap="m"
                         flex={3} direction="column" alignItems="center">
                         <Avatar
                             src={person.avatar}
-                            size="xl"/>
+                            size="xl" />
                         <Flex
                             gap="8"
                             alignItems="center">
                             <Icon
                                 onBackground="accent-weak"
-                                name="globe"/>
+                                name="globe" />
                             {person.location}
                         </Flex>
-                        { person.languages.length > 0 && (
+                        {person.languages.length > 0 && (
                             <Flex
                                 wrap
                                 gap="8">
@@ -159,7 +159,7 @@ export default function About(
                                 <Flex paddingLeft="12">
                                     <Icon
                                         name="calendar"
-                                        onBackground="brand-weak"/>
+                                        onBackground="brand-weak" />
                                 </Flex>
                                 <Flex
                                     paddingX="8">
@@ -169,7 +169,7 @@ export default function About(
                                     href={about.calendar.link}
                                     data-border="rounded"
                                     variant="tertiary"
-                                    icon="chevronRight"/>
+                                    icon="chevronRight" />
                             </Flex>
                         )}
                         <Heading
@@ -195,14 +195,14 @@ export default function About(
                                             prefixIcon={item.icon}
                                             label={item.name}
                                             size="s"
-                                            variant="tertiary"/>
+                                            variant="tertiary" />
                                     )
                                 ))}
                             </Flex>
                         )}
                     </Flex>
 
-                    { about.intro.display && (
+                    {about.intro.display && (
                         <Flex
                             direction="column"
                             textVariant="body-default-l"
@@ -211,7 +211,7 @@ export default function About(
                         </Flex>
                     )}
 
-                    { about.work.display && (
+                    {about.work.display && (
                         <>
                             <Heading
                                 as="h2"
@@ -253,43 +253,23 @@ export default function About(
                                         <Flex
                                             as="ul"
                                             direction="column" gap="16">
-                                            {experience.achievements.map((achievement: string, index: any) => (
+                                            {experience.achievements.map((achievement: string, index: number) => (
                                                 <Text
+                                                    key={index}
                                                     as="li"
                                                     variant="body-default-m"
-                                                    key={`${experience.company}-${index}`}>
+                                                    marginBottom="16">
                                                     {achievement}
                                                 </Text>
                                             ))}
                                         </Flex>
-                                        {experience.images.length > 0 && (
-                                            <Flex
-                                                fillWidth paddingTop="m" paddingLeft="40"
-                                                wrap>
-                                                {experience.images.map((image, index) => (
-                                                    <Flex
-                                                        key={index}
-                                                        border="neutral-medium"
-                                                        borderStyle="solid-1"
-                                                        radius="m"
-                                                        minWidth={image.width} height={image.height}>
-                                                        <SmartImage
-                                                            enlarge
-                                                            radius="m"
-                                                            sizes={image.width.toString()}
-                                                            alt={image.alt}
-                                                            src={image.src}/>
-                                                    </Flex>
-                                                ))}
-                                            </Flex>
-                                        )}
                                     </Flex>
                                 ))}
                             </Flex>
                         </>
                     )}
 
-                    { about.studies.display && (
+                    {about.studies.display && (
                         <>
                             <Heading
                                 as="h2"
@@ -304,17 +284,29 @@ export default function About(
                                 {about.studies.institutions.map((institution, index) => (
                                     <Flex
                                         key={`${institution.name}-${index}`}
-                                        fillWidth gap="4"
+                                        fillWidth
                                         direction="column">
+                                        <Flex
+                                            fillWidth
+                                            justifyContent="space-between"
+                                            alignItems="flex-end"
+                                            marginBottom="4">
+                                            <Text
+                                                id={institution.name}
+                                                variant="heading-strong-l">
+                                                {institution.name}
+                                            </Text>
+                                            <Text
+                                                variant="heading-default-xs"
+                                                onBackground="neutral-weak">
+                                                {institution.timeframe}
+                                            </Text>
+                                        </Flex>
                                         <Text
-                                            id={institution.name}
-                                            variant="heading-strong-l">
-                                            {institution.name}
-                                        </Text>
-                                        <Text
-                                            variant="heading-default-xs"
-                                            onBackground="neutral-weak">
-                                            {institution.description}
+                                            variant="body-default-s"
+                                            onBackground="brand-weak"
+                                            marginBottom="m">
+                                            {institution.degree}
                                         </Text>
                                     </Flex>
                                 ))}
@@ -322,22 +314,25 @@ export default function About(
                         </>
                     )}
 
-                    { about.technical.display && (
+                    {about.technical.display && (
                         <>
                             <Heading
                                 as="h2"
                                 id={about.technical.title}
-                                variant="display-strong-s" marginBottom="40">
+                                variant="display-strong-s"
+                                marginBottom="40">
                                 {about.technical.title}
                             </Heading>
                             <Flex
-                                direction="column"
-                                fillWidth gap="l">
+                                direction="row"
+                                wrap="wrap"
+                                fillWidth
+                                gap="l">
                                 {about.technical.skills.map((skill, index) => (
                                     <Flex
                                         key={`${skill}-${index}`}
-                                        fillWidth gap="4"
-                                        direction="column">
+                                        direction="column"
+                                        style={{ flex: '1 1 calc(33.33% - 20px)', margin: '10px' }}>
                                         <Text
                                             variant="heading-strong-l">
                                             {skill.title}
@@ -349,7 +344,9 @@ export default function About(
                                         </Text>
                                         {skill.images && skill.images.length > 0 && (
                                             <Flex
-                                                fillWidth paddingTop="m" gap="12"
+                                                fillWidth
+                                                paddingTop="m"
+                                                gap="12"
                                                 wrap>
                                                 {skill.images.map((image, index) => (
                                                     <Flex
@@ -357,13 +354,14 @@ export default function About(
                                                         border="neutral-medium"
                                                         borderStyle="solid-1"
                                                         radius="m"
-                                                        minWidth={image.width} height={image.height}>
+                                                        minWidth={image.width}
+                                                        height={image.height}>
                                                         <SmartImage
                                                             enlarge
                                                             radius="m"
                                                             sizes={image.width.toString()}
                                                             alt={image.alt}
-                                                            src={image.src}/>
+                                                            src={image.src} />
                                                     </Flex>
                                                 ))}
                                             </Flex>
